@@ -3,8 +3,8 @@ const bcrypt = require('bcryptjs');
 
 const seedAdmin = async () => {
   try {
-    const adminCount = await Admin.countDocuments();
-    if (adminCount === 0) {
+    const admin = await Admin.findOne({ username: 'admin' });
+    if (!admin) {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash('admin123', salt);
       const newAdmin = new Admin({ username: 'admin', password: hashedPassword });
