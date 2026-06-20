@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import { Pencil, Trash2, Plus, CheckCircle, XCircle } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
@@ -27,14 +27,14 @@ const ServicesTab = () => {
   const [formData, setFormData] = useState({ _id: null, name: '', description: '', price: '', duration: '', category: '', imageUrl: '' });
 
   const fetchServices = async () => {
-    const res = await axios.get('/api/services/get');
+    const res = await api.get('/api/services/get');
     setServices(res.data);
   };
   useEffect(() => { fetchServices(); }, []);
 
   const handleDelete = async (id) => {
     if (window.confirm("Delete this service?")) {
-      await axios.delete(`/api/services/${id}`);
+      await api.delete(`/api/services/${id}`);
       fetchServices();
     }
   };
@@ -46,9 +46,9 @@ const ServicesTab = () => {
       if (!payload._id) delete payload._id;
 
       if (formData._id) {
-        await axios.put(`/api/services/${formData._id}`, payload);
+        await api.put(`/api/services/${formData._id}`, payload);
       } else {
-        await axios.post('/api/services/add', payload);
+        await api.post('/api/services/add', payload);
       }
       setModalOpen(false);
       fetchServices();
@@ -103,16 +103,16 @@ const AppointmentsTab = () => {
   const [appointments, setAppointments] = useState([]);
   useEffect(() => { fetchAppts(); }, []);
   const fetchAppts = async () => {
-    const res = await axios.get('/api/appointments/get');
+    const res = await api.get('/api/appointments/get');
     setAppointments(res.data.data);
   };
   const handleStatus = async (id, status) => {
-    await axios.put(`/api/appointments/${id}/status`, { status });
+    await api.put(`/api/appointments/${id}/status`, { status });
     fetchAppts();
   };
   const handleDelete = async (id) => {
     if (window.confirm("Delete appointment?")) {
-      await axios.delete(`/api/appointments/${id}`);
+      await api.delete(`/api/appointments/${id}`);
       fetchAppts();
     }
   };
@@ -152,16 +152,16 @@ const ReviewsTab = () => {
   const [reviews, setReviews] = useState([]);
   useEffect(() => { fetchReviews(); }, []);
   const fetchReviews = async () => {
-    const res = await axios.get('/api/reviews/all');
+    const res = await api.get('/api/reviews/all');
     setReviews(res.data.data);
   };
   const toggleApprove = async (id, current) => {
-    await axios.put(`/api/reviews/${id}/status`, { approved: !current });
+    await api.put(`/api/reviews/${id}/status`, { approved: !current });
     fetchReviews();
   };
   const handleDelete = async (id) => {
     if (window.confirm("Delete review?")) {
-      await axios.delete(`/api/reviews/${id}`);
+      await api.delete(`/api/reviews/${id}`);
       fetchReviews();
     }
   };
@@ -201,14 +201,14 @@ const GalleryTab = () => {
   const [formData, setFormData] = useState({ imageUrl: '', caption: '' });
 
   const fetchImages = async () => {
-    const res = await axios.get('/api/gallery/get');
+    const res = await api.get('/api/gallery/get');
     setImages(res.data.data);
   };
   useEffect(() => { fetchImages(); }, []);
 
   const handleDelete = async (id) => {
     if (window.confirm("Delete image?")) {
-      await axios.delete(`/api/gallery/${id}`);
+      await api.delete(`/api/gallery/${id}`);
       fetchImages();
     }
   };
@@ -216,7 +216,7 @@ const GalleryTab = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/api/gallery/add', formData);
+      await api.post('/api/gallery/add', formData);
       setModalOpen(false);
       fetchImages();
     } catch (err) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { Star } from 'lucide-react';
 import GlassCard from '../ui/GlassCard';
 import Input from '../ui/Input';
@@ -15,7 +15,7 @@ const Testimonials = () => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const res = await axios.get('/api/reviews/approved');
+        const res = await api.get('/api/reviews/approved');
         setReviews(res.data.data);
       } catch (err) {
         console.error(err);
@@ -30,7 +30,7 @@ const Testimonials = () => {
     e.preventDefault();
     setFormStatus({ loading: true, message: '', error: '' });
     try {
-      await axios.post('/api/reviews/add', formData);
+      await api.post('/api/reviews/add', formData);
       setFormStatus({ loading: false, message: 'Thank you! Your review has been submitted for moderation.', error: '' });
       setFormData({ name: '', rating: 5, review: '' });
     } catch (err) {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import GlassCard from '../ui/GlassCard';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
@@ -11,7 +11,7 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/api/contact', formData);
+      await api.post('/api/contact', formData);
       setStatus('Message sent successfully! We will get back to you soon.');
       setFormData({ name: '', email: '', message: '' });
     } catch (err) {

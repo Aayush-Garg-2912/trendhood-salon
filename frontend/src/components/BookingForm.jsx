@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 
 const BookingForm = () => {
   const [services, setServices] = useState([]);
@@ -8,7 +8,7 @@ const BookingForm = () => {
 
   useEffect(() => {
     const fetchServices = async () => {
-      try { const response = await axios.get('/api/services/get'); setServices(response.data); } catch (e) {}
+      try { const response = await api.get('/api/services/get'); setServices(response.data); } catch (e) {}
     };
     fetchServices();
   }, []);
@@ -18,7 +18,7 @@ const BookingForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault(); setLoading(true);
     try {
-      await axios.post('/api/appointments/book', formData);
+      await api.post('/api/appointments/book', formData);
       alert('Appointment Booked Successfully!');
       setFormData({ customerName: '', phone: '', service: '', appointmentDate: '' });
     } catch (error) { alert('Failed to book appointment.'); } finally { setLoading(false); }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { MapPin, Phone, Clock } from 'lucide-react';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
@@ -12,7 +12,7 @@ const Footer = () => {
     e.preventDefault();
     setStatus({ loading: true, message: '', error: '' });
     try {
-      await axios.post('/api/contact/send', { email, type: 'newsletter' });
+      await api.post('/api/contact/send', { email, type: 'newsletter' });
       setStatus({ loading: false, message: 'Subscribed successfully!', error: '' });
       setEmail('');
     } catch (err) {

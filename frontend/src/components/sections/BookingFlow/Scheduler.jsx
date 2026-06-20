@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../../utils/api';
 import Input from '../../ui/Input';
 import Button from '../../ui/Button';
 import GlassCard from '../../ui/GlassCard';
@@ -21,7 +21,7 @@ const Scheduler = ({ selectedServices, onBack, onSuccess }) => {
     setLoading(true);
 
     try {
-      await axios.post('/api/appointments/book', {
+      await api.post('/api/appointments/book', {
         customerName: formData.customerName,
         phone: formData.phone,
         services: selectedServices.map(s => s._id),

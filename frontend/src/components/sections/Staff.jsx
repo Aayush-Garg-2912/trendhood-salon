@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import GlassCard from '../ui/GlassCard';
 import Spinner from '../ui/Spinner';
 
@@ -10,7 +10,7 @@ const Staff = () => {
   useEffect(() => {
     const fetchStylists = async () => {
       try {
-        const res = await axios.get('/api/stylists/get');
+        const res = await api.get('/api/stylists/get');
         setStylists(res.data.data);
       } catch (error) {
         console.error(error);

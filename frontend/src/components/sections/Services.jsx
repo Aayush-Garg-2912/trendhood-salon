@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import GlassCard from '../ui/GlassCard';
 import Spinner from '../ui/Spinner';
 
@@ -10,7 +10,7 @@ const Services = () => {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await axios.get('/api/services/get');
+        const response = await api.get('/api/services/get');
         setServices(response.data);
       } catch (error) {
         console.error("Error fetching services:", error);

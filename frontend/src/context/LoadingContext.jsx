@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import Spinner from '../components/ui/Spinner';
 
 export const LoadingContext = createContext();
@@ -10,13 +10,13 @@ export const LoadingProvider = ({ children }) => {
   useEffect(() => {
     let activeRequests = 0;
 
-    const reqInterceptor = axios.interceptors.request.use(config => {
+    const reqInterceptor = api.interceptors.request.use(config => {
       activeRequests++;
       setLoading(true);
       return config;
     }, error => Promise.reject(error));
 
-    const resInterceptor = axios.interceptors.response.use(response => {
+    const resInterceptor = api.interceptors.response.use(response => {
       activeRequests--;
       if (activeRequests <= 0) {
         activeRequests = 0;
@@ -33,8 +33,8 @@ export const LoadingProvider = ({ children }) => {
     });
 
     return () => {
-      axios.interceptors.request.eject(reqInterceptor);
-      axios.interceptors.response.eject(resInterceptor);
+      api.interceptors.request.eject(reqInterceptor);
+      api.interceptors.response.eject(resInterceptor);
     };
   }, []);
 

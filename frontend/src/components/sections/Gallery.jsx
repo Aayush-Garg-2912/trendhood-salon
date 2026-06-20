@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 
 const Gallery = () => {
   const [images, setImages] = useState([]);
@@ -7,7 +7,7 @@ const Gallery = () => {
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        const response = await axios.get('/api/gallery/get');
+        const response = await api.get('/api/gallery/get');
         setImages(response.data.data);
       } catch (error) {
         console.error('Error fetching gallery images:', error);
