@@ -53,6 +53,7 @@ const ServicesTab = () => {
       setModalOpen(false);
       fetchServices();
     } catch (err) {
+      console.log("Error details:", err.response || err.message);
       alert("Error saving service: " + (err.response?.data?.message || err.message));
     }
   };
@@ -220,6 +221,7 @@ const GalleryTab = () => {
       setModalOpen(false);
       fetchImages();
     } catch (err) {
+      console.log("Error details:", err.response || err.message);
       alert("Error adding image: " + (err.response?.data?.message || err.message));
     }
   };

@@ -18,7 +18,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: ["https://trendhood-salon.netlify.app", "http://localhost:5174"],
+  origin: ["https://trendhoodsalon.netlify.app", "http://localhost:5174"],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
