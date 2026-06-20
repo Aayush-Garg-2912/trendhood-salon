@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://trendhood-salon.onrender.com',
+  baseURL: import.meta.env.MODE === 'development' ? 'http://localhost:5000' : 'https://trendhood-salon.onrender.com',
   withCredentials: true
 });
 
