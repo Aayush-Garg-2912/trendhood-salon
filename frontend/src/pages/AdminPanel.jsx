@@ -264,7 +264,7 @@ const SecurityTab = () => {
     }
 
     try {
-      await api.put('/admin/update-credentials', {
+      await api.put('/api/admin/update-credentials', {
         username: 'admin',
         oldPassword: formData.oldPassword,
         newPassword: formData.newPassword

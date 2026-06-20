@@ -12,7 +12,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post('/admin/login', credentials);
+      await api.post('/api/admin/login', credentials);
       localStorage.setItem('isAuthenticated', 'true');
       navigate('/admin-dashboard');
     } catch (err) {
