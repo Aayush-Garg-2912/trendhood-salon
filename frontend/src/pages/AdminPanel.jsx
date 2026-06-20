@@ -252,31 +252,34 @@ const GalleryTab = () => {
 };
 
 const SecurityTab = () => {
-  const [formData, setFormData] = useState({ oldPassword: '', newPassword: '', confirmPassword: '' });
+  const [formData, setFormData] = useState({ newUsername: '', oldPassword: '', newPassword: '', confirmPassword: '' });
   const [status, setStatus] = useState({ type: '', message: '' });
 
   const handleChange = (e) => setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.newPassword !== formData.confirmPassword) {
+    if (formData.newPassword && formData.newPassword !== formData.confirmPassword) {
       return setStatus({ type: 'error', message: 'New passwords do not match' });
     }
 
     try {
+      const currentUsername = localStorage.getItem('adminUsername') || 'admin';
       await api.put('/api/admin/update-credentials', {
-        username: 'admin',
+        username: currentUsername,
+        newUsername: formData.newUsername,
         oldPassword: formData.oldPassword,
         newPassword: formData.newPassword
       });
-      setStatus({ type: 'success', message: 'Password updated successfully! Redirecting to login...' });
+      setStatus({ type: 'success', message: 'Credentials updated successfully! Redirecting to login...' });
       
       setTimeout(() => {
         localStorage.removeItem('isAuthenticated');
+        localStorage.removeItem('adminUsername');
         window.location.href = '/login';
       }, 2000);
     } catch (err) {
-      setStatus({ type: 'error', message: err.response?.data?.message || 'Failed to update password' });
+      setStatus({ type: 'error', message: err.response?.data?.message || 'Failed to update credentials' });
     }
   };
 
@@ -284,7 +287,7 @@ const SecurityTab = () => {
     <div className="max-w-xl">
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-white">Security Settings</h2>
-        <p className="text-gray-400 text-sm mt-1">Update your administrator password.</p>
+        <p className="text-gray-400 text-sm mt-1">Update your administrator username or password.</p>
       </div>
 
       {status.message && (
@@ -294,10 +297,11 @@ const SecurityTab = () => {
       )}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5 bg-[#1e1e1e] border border-gray-800 p-6 rounded-xl">
-        <Input label="Current Password" type="password" name="oldPassword" value={formData.oldPassword} onChange={handleChange} required />
-        <Input label="New Password" type="password" name="newPassword" value={formData.newPassword} onChange={handleChange} required />
-        <Input label="Confirm New Password" type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
-        <Button type="submit" className="mt-2">Change Password</Button>
+        <Input label="New Username (Optional)" name="newUsername" value={formData.newUsername} onChange={handleChange} placeholder="Leave blank to keep current" />
+        <Input label="Current Password (Required)" type="password" name="oldPassword" value={formData.oldPassword} onChange={handleChange} required />
+        <Input label="New Password (Optional)" type="password" name="newPassword" value={formData.newPassword} onChange={handleChange} placeholder="Leave blank to keep current" />
+        <Input label="Confirm New Password" type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} />
+        <Button type="submit" className="mt-2">Update Credentials</Button>
       </form>
     </div>
   );

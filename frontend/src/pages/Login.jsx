@@ -14,6 +14,7 @@ const Login = () => {
     try {
       await api.post('/api/admin/login', credentials);
       localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('adminUsername', credentials.username);
       navigate('/admin-dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid username or password');

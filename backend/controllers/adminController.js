@@ -37,9 +37,13 @@ const login = async (req, res) => {
 
 const updateCredentials = async (req, res) => {
   try {
-    const { username, oldPassword, newPassword } = req.body;
-    if (!username || !oldPassword || !newPassword) {
-      return res.status(400).json({ message: 'All fields are required' });
+    const { username, oldPassword, newUsername, newPassword } = req.body;
+    if (!username || !oldPassword) {
+      return res.status(400).json({ message: 'Current username and password are required' });
+    }
+
+    if (!newUsername && !newPassword) {
+      return res.status(400).json({ message: 'Nothing to update' });
     }
 
     const admin = await Admin.findOne({ username });
@@ -48,13 +52,22 @@ const updateCredentials = async (req, res) => {
     const isMatch = await bcrypt.compare(oldPassword, admin.password);
     if (!isMatch) return res.status(401).json({ message: 'Invalid current credentials' });
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    // Update username if provided and different
+    if (newUsername && newUsername !== username) {
+      const existingUser = await Admin.findOne({ username: newUsername });
+      if (existingUser) return res.status(409).json({ message: 'Username is already taken' });
+      admin.username = newUsername;
+    }
+
+    // Update password if provided
+    if (newPassword) {
+      const salt = await bcrypt.genSalt(10);
+      admin.password = await bcrypt.hash(newPassword, salt);
+    }
     
-    admin.password = hashedPassword;
     await admin.save();
 
-    res.status(200).json({ success: true, message: 'Password updated successfully' });
+    res.status(200).json({ success: true, message: 'Credentials updated successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
