@@ -251,6 +251,58 @@ const GalleryTab = () => {
   );
 };
 
+const SecurityTab = () => {
+  const [formData, setFormData] = useState({ oldPassword: '', newPassword: '', confirmPassword: '' });
+  const [status, setStatus] = useState({ type: '', message: '' });
+
+  const handleChange = (e) => setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (formData.newPassword !== formData.confirmPassword) {
+      return setStatus({ type: 'error', message: 'New passwords do not match' });
+    }
+
+    try {
+      await api.put('/admin/update-credentials', {
+        username: 'admin',
+        oldPassword: formData.oldPassword,
+        newPassword: formData.newPassword
+      });
+      setStatus({ type: 'success', message: 'Password updated successfully! Redirecting to login...' });
+      
+      setTimeout(() => {
+        localStorage.removeItem('isAuthenticated');
+        window.location.href = '/login';
+      }, 2000);
+    } catch (err) {
+      setStatus({ type: 'error', message: err.response?.data?.message || 'Failed to update password' });
+    }
+  };
+
+  return (
+    <div className="max-w-xl">
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-white">Security Settings</h2>
+        <p className="text-gray-400 text-sm mt-1">Update your administrator password.</p>
+      </div>
+
+      {status.message && (
+        <div className={`p-4 rounded-lg mb-6 border text-center ${status.type === 'error' ? 'bg-red-500/10 border-red-500/50 text-red-500' : 'bg-green-500/10 border-green-500/50 text-green-500'}`}>
+          {status.message}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5 bg-[#1e1e1e] border border-gray-800 p-6 rounded-xl">
+        <Input label="Current Password" type="password" name="oldPassword" value={formData.oldPassword} onChange={handleChange} required />
+        <Input label="New Password" type="password" name="newPassword" value={formData.newPassword} onChange={handleChange} required />
+        <Input label="Confirm New Password" type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
+        <Button type="submit" className="mt-2">Change Password</Button>
+      </form>
+    </div>
+  );
+};
+
 const TabButton = ({ active, onClick, children }) => (
   <button onClick={onClick} className={`text-left px-4 py-3 rounded-lg text-sm font-bold uppercase tracking-widest transition-colors ${active ? 'bg-[#D4AF37] text-[#121212]' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}>
     {children}
@@ -273,6 +325,8 @@ const AdminPanel = () => {
           <TabButton active={activeTab === 'appointments'} onClick={() => setActiveTab('appointments')}>Appointments</TabButton>
           <TabButton active={activeTab === 'reviews'} onClick={() => setActiveTab('reviews')}>Reviews</TabButton>
           <TabButton active={activeTab === 'gallery'} onClick={() => setActiveTab('gallery')}>Gallery</TabButton>
+          <div className="my-4 border-t border-gray-800"></div>
+          <TabButton active={activeTab === 'security'} onClick={() => setActiveTab('security')}>Profile / Security</TabButton>
         </nav>
         <button onClick={handleLogout} className="mt-auto py-3 border border-red-900/50 text-red-500 rounded-lg hover:bg-red-500/10 transition-colors uppercase text-xs font-bold tracking-widest">Logout</button>
       </div>
@@ -281,6 +335,7 @@ const AdminPanel = () => {
         {activeTab === 'appointments' && <AppointmentsTab />}
         {activeTab === 'reviews' && <ReviewsTab />}
         {activeTab === 'gallery' && <GalleryTab />}
+        {activeTab === 'security' && <SecurityTab />}
       </div>
     </div>
   );

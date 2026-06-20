@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../utils/api';
 
 const Login = () => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
@@ -8,14 +9,14 @@ const Login = () => {
 
   const handleChange = (e) => setCredentials(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Simple hardcoded authentication for demonstration
-    if (credentials.username === 'admin' && credentials.password === 'admin123') {
+    try {
+      await api.post('/admin/login', credentials);
       localStorage.setItem('isAuthenticated', 'true');
       navigate('/admin-dashboard');
-    } else {
-      setError('Invalid username or password');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Invalid username or password');
     }
   };
 

@@ -14,6 +14,10 @@ const stylistRoutes = require('./routes/stylistRoutes');
 // Connect to database
 connectDB();
 
+// Seed Default Admin
+const { seedAdmin } = require('./controllers/adminController');
+seedAdmin();
+
 const app = express();
 
 // Middleware
@@ -33,6 +37,7 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/stylists', stylistRoutes);
 app.use('/api/gallery', require('./routes/galleryRoutes'));
+app.use('/api/admin', require('./routes/adminRoutes'));
 
 app.get('/', (req, res) => {
   res.send('Trendhood Hair Salon API is running');
