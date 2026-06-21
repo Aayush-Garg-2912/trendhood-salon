@@ -24,11 +24,11 @@ const Hero = () => {
         <p className="text-gray-300 text-lg md:text-xl font-light tracking-wide mb-10 leading-relaxed">
           Experience premium grooming, exquisite styling, and luxurious care tailored exclusively for you at Trendhood Hair Salon.
         </p>
-        <div className="flex justify-center gap-4">
-          <a href="#book" className="px-8 py-4 bg-[#D4AF37] hover:bg-[#F3CE52] text-[#121212] font-bold uppercase tracking-widest text-sm rounded-xl transition-all shadow-[0_0_20px_rgba(212,175,55,0.3)]">
+        <div className="flex flex-col sm:flex-row justify-center gap-4">
+          <a href="#book" className="px-8 py-4 bg-[#D4AF37] hover:bg-[#F3CE52] text-[#121212] font-bold uppercase tracking-widest text-sm rounded-xl transition-all shadow-[0_0_20px_rgba(212,175,55,0.3)] w-full sm:w-auto">
             Book Now
           </a>
-          <a href="#services" className="px-8 py-4 bg-transparent border border-white/20 hover:border-white text-white font-bold uppercase tracking-widest text-sm rounded-xl transition-all">
+          <a href="#services" className="px-8 py-4 bg-transparent border border-white/20 hover:border-white text-white font-bold uppercase tracking-widest text-sm rounded-xl transition-all w-full sm:w-auto">
             Explore Services
           </a>
         </div>

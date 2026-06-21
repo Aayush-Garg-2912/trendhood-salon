@@ -321,20 +321,20 @@ const AdminPanel = () => {
   };
 
   return (
-    <div className="flex min-h-[80vh] bg-[#121212] rounded-2xl border border-gray-800 shadow-2xl overflow-hidden mt-8">
-      <div className="w-64 bg-[#1a1a1a] border-r border-gray-800 flex flex-col p-6">
-        <h2 className="text-xl font-bold text-white mb-8 tracking-widest uppercase">Admin</h2>
-        <nav className="flex flex-col gap-2 flex-grow">
+    <div className="flex flex-col md:flex-row min-h-[80vh] md:h-[80vh] bg-[#121212] rounded-2xl border border-gray-800 shadow-2xl overflow-hidden mt-8 md:mx-4 mx-2">
+      <div className="w-full md:w-64 bg-[#1a1a1a] border-b md:border-b-0 md:border-r border-gray-800 flex flex-col p-6">
+        <h2 className="text-xl font-bold text-white mb-4 md:mb-8 tracking-widest uppercase">Admin</h2>
+        <nav className="flex md:flex-col gap-2 flex-wrap md:flex-nowrap overflow-x-auto pb-2 md:pb-0">
           <TabButton active={activeTab === 'services'} onClick={() => setActiveTab('services')}>Services</TabButton>
           <TabButton active={activeTab === 'appointments'} onClick={() => setActiveTab('appointments')}>Appointments</TabButton>
           <TabButton active={activeTab === 'reviews'} onClick={() => setActiveTab('reviews')}>Reviews</TabButton>
           <TabButton active={activeTab === 'gallery'} onClick={() => setActiveTab('gallery')}>Gallery</TabButton>
-          <div className="my-4 border-t border-gray-800"></div>
-          <TabButton active={activeTab === 'security'} onClick={() => setActiveTab('security')}>Profile / Security</TabButton>
+          <div className="hidden md:block my-4 border-t border-gray-800"></div>
+          <TabButton active={activeTab === 'security'} onClick={() => setActiveTab('security')}>Security</TabButton>
         </nav>
-        <button onClick={handleLogout} className="mt-auto py-3 border border-red-900/50 text-red-500 rounded-lg hover:bg-red-500/10 transition-colors uppercase text-xs font-bold tracking-widest">Logout</button>
+        <button onClick={handleLogout} className="mt-4 md:mt-auto py-3 border border-red-900/50 text-red-500 rounded-lg hover:bg-red-500/10 transition-colors uppercase text-xs font-bold tracking-widest w-full">Logout</button>
       </div>
-      <div className="flex-1 p-8 overflow-y-auto max-h-[80vh]">
+      <div className="flex-1 p-4 md:p-8 overflow-y-auto">
         {activeTab === 'services' && <ServicesTab />}
         {activeTab === 'appointments' && <AppointmentsTab />}
         {activeTab === 'reviews' && <ReviewsTab />}
