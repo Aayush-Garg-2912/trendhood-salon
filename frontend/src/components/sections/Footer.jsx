@@ -7,6 +7,27 @@ import Input from '../ui/Input';
 const Footer = () => {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState({ loading: false, message: '', error: '' });
+  const [settings, setSettings] = useState({
+    description: 'Setting the standard for luxury grooming and styling. Experience excellence in every detail.',
+    address: '123 Luxury Avenue, Suite 400\nNew York, NY 10012',
+    phone: '+1 (555) 123-4567',
+    hours: { monFri: '9:00 AM - 8:00 PM', saturday: '10:00 AM - 6:00 PM', sunday: 'Closed' },
+    socials: { facebook: '#', twitter: '#', instagram: '#' }
+  });
+
+  React.useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await api.get('/api/settings/get');
+        if (res.data.data) {
+          setSettings(res.data.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch site settings", err);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
@@ -28,17 +49,17 @@ const Footer = () => {
           <div className="text-2xl font-bold tracking-widest uppercase mb-6">
             Trendhood<span className="text-[#D4AF37]">.</span>
           </div>
-          <p className="text-gray-400 font-light leading-relaxed mb-6">
-            Setting the standard for luxury grooming and styling. Experience excellence in every detail.
+          <p className="text-gray-400 font-light leading-relaxed mb-6 whitespace-pre-line">
+            {settings.description}
           </p>
           <div className="flex gap-4">
-            <a href="#" className="w-10 h-10 rounded-full bg-[#1e1e1e] flex items-center justify-center text-gray-400 hover:text-[#D4AF37] transition-colors">
+            <a href={settings.socials?.instagram || '#'} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#1e1e1e] flex items-center justify-center text-gray-400 hover:text-[#D4AF37] transition-colors">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
             </a>
-            <a href="#" className="w-10 h-10 rounded-full bg-[#1e1e1e] flex items-center justify-center text-gray-400 hover:text-[#D4AF37] transition-colors">
+            <a href={settings.socials?.facebook || '#'} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#1e1e1e] flex items-center justify-center text-gray-400 hover:text-[#D4AF37] transition-colors">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
             </a>
-            <a href="#" className="w-10 h-10 rounded-full bg-[#1e1e1e] flex items-center justify-center text-gray-400 hover:text-[#D4AF37] transition-colors">
+            <a href={settings.socials?.twitter || '#'} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#1e1e1e] flex items-center justify-center text-gray-400 hover:text-[#D4AF37] transition-colors">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
             </a>
           </div>
@@ -50,11 +71,11 @@ const Footer = () => {
           <div className="space-y-4">
             <div className="flex items-start gap-3 text-gray-400">
               <MapPin className="text-[#D4AF37] mt-1 shrink-0" size={18} />
-              <span className="font-light">123 Luxury Avenue, Suite 400<br />New York, NY 10012</span>
+              <span className="font-light whitespace-pre-line">{settings.address}</span>
             </div>
             <div className="flex items-center gap-3 text-gray-400">
               <Phone className="text-[#D4AF37] shrink-0" size={18} />
-              <span className="font-light">+1 (555) 123-4567</span>
+              <span className="font-light">{settings.phone}</span>
             </div>
           </div>
         </div>
@@ -68,15 +89,15 @@ const Footer = () => {
               <div className="w-full font-light text-sm">
                 <div className="flex justify-between border-b border-gray-800 pb-2 mb-2">
                   <span>Mon - Fri</span>
-                  <span className="text-white">9:00 AM - 8:00 PM</span>
+                  <span className={settings.hours?.monFri?.toLowerCase() === 'closed' ? 'text-[#D4AF37] font-semibold' : 'text-white'}>{settings.hours?.monFri}</span>
                 </div>
                 <div className="flex justify-between border-b border-gray-800 pb-2 mb-2">
                   <span>Saturday</span>
-                  <span className="text-white">10:00 AM - 6:00 PM</span>
+                  <span className={settings.hours?.saturday?.toLowerCase() === 'closed' ? 'text-[#D4AF37] font-semibold' : 'text-white'}>{settings.hours?.saturday}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Sunday</span>
-                  <span className="text-[#D4AF37] font-semibold">Closed</span>
+                  <span className={settings.hours?.sunday?.toLowerCase() === 'closed' ? 'text-[#D4AF37] font-semibold' : 'text-white'}>{settings.hours?.sunday}</span>
                 </div>
               </div>
             </div>

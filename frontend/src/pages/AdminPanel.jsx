@@ -307,6 +307,94 @@ const SecurityTab = () => {
   );
 };
 
+const SiteInfoTab = () => {
+  const [formData, setFormData] = useState({
+    description: '',
+    address: '',
+    phone: '',
+    hours: { monFri: '', saturday: '', sunday: '' },
+    socials: { facebook: '', twitter: '', instagram: '' }
+  });
+  const [status, setStatus] = useState({ type: '', message: '' });
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await api.get('/api/settings/get');
+        if (res.data.data) {
+          setFormData(res.data.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch settings", err);
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name.startsWith('hours.')) {
+      const key = name.split('.')[1];
+      setFormData(prev => ({ ...prev, hours: { ...prev.hours, [key]: value } }));
+    } else if (name.startsWith('socials.')) {
+      const key = name.split('.')[1];
+      setFormData(prev => ({ ...prev, socials: { ...prev.socials, [key]: value } }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus({ type: '', message: '' });
+    try {
+      await api.put('/api/settings/update', formData);
+      setStatus({ type: 'success', message: 'Site information updated successfully!' });
+      setTimeout(() => setStatus({ type: '', message: '' }), 3000);
+    } catch (err) {
+      setStatus({ type: 'error', message: 'Failed to update site information.' });
+    }
+  };
+
+  return (
+    <div className="max-w-2xl">
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-white">Site Information</h2>
+        <p className="text-gray-400 text-sm mt-1">Update your footer contact details, hours, and social links.</p>
+      </div>
+
+      {status.message && (
+        <div className={`p-4 rounded-lg mb-6 border text-center ${status.type === 'error' ? 'bg-red-500/10 border-red-500/50 text-red-500' : 'bg-green-500/10 border-green-500/50 text-green-500'}`}>
+          {status.message}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5 bg-[#1e1e1e] border border-gray-800 p-6 rounded-xl">
+        <h3 className="text-[#D4AF37] font-bold tracking-widest uppercase text-xs mb-2 border-b border-gray-800 pb-2">General</h3>
+        <Input label="Description (Footer)" type="textarea" rows="2" name="description" value={formData.description} onChange={handleChange} />
+        
+        <h3 className="text-[#D4AF37] font-bold tracking-widest uppercase text-xs mt-4 mb-2 border-b border-gray-800 pb-2">Contact Details</h3>
+        <Input label="Address" type="textarea" rows="2" name="address" value={formData.address} onChange={handleChange} />
+        <Input label="Phone Number" name="phone" value={formData.phone} onChange={handleChange} />
+        
+        <h3 className="text-[#D4AF37] font-bold tracking-widest uppercase text-xs mt-4 mb-2 border-b border-gray-800 pb-2">Working Hours</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Input label="Mon - Fri" name="hours.monFri" value={formData.hours.monFri} onChange={handleChange} />
+          <Input label="Saturday" name="hours.saturday" value={formData.hours.saturday} onChange={handleChange} />
+          <Input label="Sunday" name="hours.sunday" value={formData.hours.sunday} onChange={handleChange} />
+        </div>
+
+        <h3 className="text-[#D4AF37] font-bold tracking-widest uppercase text-xs mt-4 mb-2 border-b border-gray-800 pb-2">Social Links</h3>
+        <Input label="Instagram URL" name="socials.instagram" value={formData.socials.instagram} onChange={handleChange} />
+        <Input label="Facebook URL" name="socials.facebook" value={formData.socials.facebook} onChange={handleChange} />
+        <Input label="Twitter URL" name="socials.twitter" value={formData.socials.twitter} onChange={handleChange} />
+
+        <Button type="submit" className="mt-4">Save Changes</Button>
+      </form>
+    </div>
+  );
+};
+
 const TabButton = ({ active, onClick, children }) => (
   <button onClick={onClick} className={`text-left px-4 py-3 rounded-lg text-sm font-bold uppercase tracking-widest transition-colors ${active ? 'bg-[#D4AF37] text-[#121212]' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}>
     {children}
@@ -330,6 +418,7 @@ const AdminPanel = () => {
           <TabButton active={activeTab === 'reviews'} onClick={() => setActiveTab('reviews')}>Reviews</TabButton>
           <TabButton active={activeTab === 'gallery'} onClick={() => setActiveTab('gallery')}>Gallery</TabButton>
           <div className="hidden md:block my-4 border-t border-gray-800"></div>
+          <TabButton active={activeTab === 'siteInfo'} onClick={() => setActiveTab('siteInfo')}>Site Info</TabButton>
           <TabButton active={activeTab === 'security'} onClick={() => setActiveTab('security')}>Security</TabButton>
         </nav>
         <button onClick={handleLogout} className="mt-4 md:mt-auto py-3 border border-red-900/50 text-red-500 rounded-lg hover:bg-red-500/10 transition-colors uppercase text-xs font-bold tracking-widest w-full">Logout</button>
@@ -339,6 +428,7 @@ const AdminPanel = () => {
         {activeTab === 'appointments' && <AppointmentsTab />}
         {activeTab === 'reviews' && <ReviewsTab />}
         {activeTab === 'gallery' && <GalleryTab />}
+        {activeTab === 'siteInfo' && <SiteInfoTab />}
         {activeTab === 'security' && <SecurityTab />}
       </div>
     </div>

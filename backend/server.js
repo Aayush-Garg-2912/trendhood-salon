@@ -38,6 +38,7 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/stylists', stylistRoutes);
 app.use('/api/gallery', require('./routes/galleryRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/settings', require('./routes/siteSettingsRoutes'));
 
 app.get('/', (req, res) => {
   res.send('Trendhood Hair Salon API is running');
